@@ -10,7 +10,8 @@ protected:
 	float y;
 	float t;
 
-	LPDIRECT3DTEXTURE9 texture;			
+	LPDIRECT3DTEXTURE9 texture;		
+	D3DXIMAGE_INFO infoSquare;
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 
@@ -20,9 +21,9 @@ public:
 	~CGameObject();
 };
 
-class CMario : public CGameObject
+class Square : public CGameObject
 {
 public: 
-	CMario(LPCWSTR texturePath) :CGameObject(texturePath) {};
+	Square(LPCWSTR texturePath) :CGameObject(texturePath) {};
 	void Update(DWORD dt);
 };

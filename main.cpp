@@ -1,13 +1,3 @@
-/* =============================================================
-	INTRODUCTION TO GAME PROGRAMMING SE102
-	
-	SAMPLE 01 - SKELETON CODE 
-
-	This sample illustrates how to:
-
-	1/ Re-Organize intro code to allow better scalability
-================================================================ */
-
 #include <windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -19,19 +9,17 @@
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"BAI-TAP-GAME-1"
 
-#define BRICK_TEXTURE_PATH L"brick.png"
-#define MARIO_TEXTURE_PATH L"square.png"
+#define TEXTURE_PATH L"square.png"
 
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(69, 69, 69)
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#define SCREEN_WIDTH GetSystemMetrics(SM_CXSCREEN)
+#define SCREEN_HEIGHT GetSystemMetrics(SM_CYSCREEN)
 
 #define MAX_FRAME_RATE 10
 
 CGame *game;
-CMario *mario;
-CGameObject *brick;
+Square *square;
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -51,8 +39,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void LoadResources()
 {
-	mario = new CMario(MARIO_TEXTURE_PATH);
-	mario->SetPosition(0.0f, 0.0f);
+	square = new Square(TEXTURE_PATH);
+	square->SetPosition(0.0f, 0.0f);
 
 	
 }
@@ -63,7 +51,7 @@ void LoadResources()
 */
 void Update(DWORD dt)
 {
-	mario->Update(dt);
+	square->Update(dt);
 	
 }
 
@@ -84,7 +72,7 @@ void Render()
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
 
-		mario->Render();
+		square->Render();
 		
 
 
@@ -124,8 +112,8 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 			 WS_EX_TOPMOST | WS_VISIBLE | WS_POPUP,
 			0,
 			0,
-			GetSystemMetrics(SM_CXSCREEN),
-			GetSystemMetrics(SM_CYSCREEN), 
+			SCREEN_WIDTH,
+			SCREEN_HEIGHT, 
 			NULL,
 			NULL,
 			hInstance,
