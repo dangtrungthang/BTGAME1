@@ -16,10 +16,46 @@
 #define SCREEN_WIDTH GetSystemMetrics(SM_CXSCREEN)
 #define SCREEN_HEIGHT GetSystemMetrics(SM_CYSCREEN)
 
-#define MAX_FRAME_RATE 10
+#define MAX_FRAME_RATE 120
 
 CGame *game;
 Square *square;
+
+class CSampleKeyHander :public KeyEventHandler {
+	virtual void KeyState(BYTE* states);
+	virtual void OnKeyDown(int KeyCode);
+	virtual void OnKeyUp(int KeyCode);
+};
+CSampleKeyHander* keyHandler;
+
+void CSampleKeyHander::OnKeyDown(int KeyCode)
+{
+	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	
+}
+
+void CSampleKeyHander::OnKeyUp(int KeyCode)
+{
+	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
+	switch (KeyCode)
+	{
+	case DIK_ESCAPE:
+		PostQuitMessage(0);
+	default:
+		break;
+	}
+}
+
+void CSampleKeyHander::KeyState(BYTE* states)
+{
+	if (game->IsKeyDown(DIK_DOWN))
+		square->SetState(MOVE_DOWN_KEYBOARD);
+	else if (game->IsKeyDown(DIK_UP))
+		square->SetState(MOVE_UP_KEYBOARD);
+	else 
+		square->SetState(IDLE);
+	
+}
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -158,6 +194,7 @@ int Run()
 		if (dt >= tickPerFrame)
 		{
 			frameStart = now;
+			game->ProcessKeyboard();
 			Update(dt);
 			Render();
 		}
@@ -175,6 +212,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	game = CGame::GetInstance();
 	game->Init(hWnd);
 
+	keyHandler = new CSampleKeyHander();
+	game->InitKeyboard(keyHandler);
 	LoadResources();
 	Run();
 

@@ -10,6 +10,7 @@
 #define SCREEN_WIDTH GetSystemMetrics(SM_CXSCREEN)
 #define SCREEN_HEIGHT GetSystemMetrics(SM_CYSCREEN)
 
+
 CGameObject::CGameObject(LPCWSTR texturePath)
 {
 	x = y = 0;
@@ -68,32 +69,15 @@ CGameObject::~CGameObject()
 
 void Square::Update(DWORD dt)
 {
-	int X = SCREEN_WIDTH - infoSquare.Width;
-	int Y = SCREEN_HEIGHT - infoSquare.Height;
-	//Eclipse
-	/*const double pi = 3.1415926535897;
-	if (t < 2 * pi) {
-		t += 0.1;
-		x = 600 * cos(t) +center_X;
-		y = 300 * sin(t) +center_Y;
+	switch (state)
+	{
+	case MOVE_UP_KEYBOARD:
+		y += 0.2f * dt; break;
+	case MOVE_DOWN_KEYBOARD:
+		y -= 0.2f * dt; break;
+	case IDLE:
+		break;
+	default:
+		break;
 	}
-	if (t > 2 * pi) {
-		t = 0;
-	}*/
-
-	//
-	if (x < X&&y<=0) {
-		x += 0.1f * dt;
-	}if ((x >X) && y  <Y) {
-		y += 0.1f * dt;
-	}
-	if ((y > Y)&&(x>=0)) {
-		x -= 0.1f * dt;
-	}
-	if ((x <= 0) && (y >= 0)) {
-		y -= 0.1f * dt;
-	}
-	
-	
-	
 }
