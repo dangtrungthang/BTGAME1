@@ -4,7 +4,7 @@
 #include <d3dx9.h>
 #include "KeyEventHandler.h"
 
-
+#define BUTTON_DOWN(obj, button) (obj.rgbButtons[button] & 0x80) 
 typedef KeyEventHandler* LPKEYEVENTHANDLER;
 
 class CGame
@@ -20,25 +20,45 @@ class CGame
 
 	LPDIRECTINPUT8       di;		// The DirectInput object         
 	LPDIRECTINPUTDEVICE8 didv;		// The keyboard device 
+	LPDIRECTINPUTDEVICE8 didvMouse; // The mouse device
 
+	
+	DIMOUSESTATE mouse_state;
 	BYTE  keyStates[256];			// DirectInput keyboard state buffer 
+	
 	DIDEVICEOBJECTDATA keyEvents[KEYBOARD_BUFFER_SIZE];		// Buffered keyboard data
+	
 
 	LPKEYEVENTHANDLER keyHandler;
+	
 
 	D3DXVECTOR3 camPos; //vị trí camera
 
 
 public:
 	void InitKeyboard(LPKEYEVENTHANDLER handler);
+	
 	void Init(HWND hWnd);
 	void Draw(float x, float y, LPDIRECT3DTEXTURE9 texture);
 
 	int IsKeyDown(int KeyCode);
 	int IsKeyPress(int KeyCode);
 	int IsKeyReleased(int KeyCode);
-
+	int Mouse_X() { return mouse_state.lX; }
+	int Mouse_Y() { return mouse_state.lY;  }
+	int Mouse_Button(int button){ return BUTTON_DOWN(mouse_state, button); }
 	void ProcessKeyboard();
+	
+	bool Check(RECT r1, RECT r2)
+	{
+		if(r2.left < r1.left + r1.right &&
+			r2.left > r1.left &&
+			r2.top < r1.top + r1.bottom &&
+			r2.top > r1.top){
+			return true;
+			}
+		return false;
+	}
 
 
 

@@ -5,21 +5,29 @@
 #include "debug.h"
 #include "Game.h"
 #include "GameObject.h"
+#include "Ball.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"BAI-TAP-GAME-1"
 
-#define TEXTURE_PATH L"square.png"
+#define TEXTURE_PATH L"paddle.png"
+
+#define TEXTURE_PATH_BALL L"ball.png"
 
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(69, 69, 69)
 #define SCREEN_WIDTH GetSystemMetrics(SM_CXSCREEN)
 #define SCREEN_HEIGHT GetSystemMetrics(SM_CYSCREEN)
 
+//#define SCREEN_WIDTH 400
+//#define SCREEN_HEIGHT 600
+
 #define MAX_FRAME_RATE 120
 
 CGame *game;
-Square *square;
+Paddle *paddleLeft;
+Paddle* paddleRight;
+Ball* ball;
 
 class CSampleKeyHander :public KeyEventHandler {
 	virtual void KeyState(BYTE* states);
@@ -41,19 +49,29 @@ void CSampleKeyHander::OnKeyUp(int KeyCode)
 	{
 	case DIK_ESCAPE:
 		PostQuitMessage(0);
+	case MOUSEEVENTF_XDOWN:
+		PostQuitMessage(0);
+	
+
 	default:
 		break;
 	}
+	
 }
 
 void CSampleKeyHander::KeyState(BYTE* states)
 {
 	if (game->IsKeyDown(DIK_DOWN))
-		square->SetState(MOVE_DOWN_KEYBOARD);
+		paddleLeft->SetState(MOVE_DOWN_KEYBOARD);
 	else if (game->IsKeyDown(DIK_UP))
-		square->SetState(MOVE_UP_KEYBOARD);
-	else 
-		square->SetState(IDLE);
+		paddleLeft->SetState(MOVE_UP_KEYBOARD);
+	
+	else
+	{
+		paddleLeft->SetState(IDLE);
+		
+	}
+	
 	
 }
 
@@ -75,8 +93,16 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void LoadResources()
 {
-	square = new Square(TEXTURE_PATH);
-	square->SetPosition(0.0f, 0.0f);
+	paddleLeft = new Paddle(TEXTURE_PATH);
+	paddleLeft->SetPosition(100.0f, 0.0f);
+
+	paddleRight = new Paddle(TEXTURE_PATH);
+	D3DXIMAGE_INFO infoPaddleR = paddleRight->GetInfo();
+	paddleRight->SetPosition(SCREEN_WIDTH- infoPaddleR.Width-100,SCREEN_HEIGHT/2 );
+
+	ball = new Ball(TEXTURE_PATH_BALL);
+	ball->SetPosition(650.0f, 350.0f);
+	ball->SetDxDy(1, 1);
 
 	
 }
@@ -87,7 +113,25 @@ void LoadResources()
 */
 void Update(DWORD dt)
 {
-	square->Update(dt);
+	paddleLeft->Update(dt);
+	paddleRight->UpdateR(dt, game->Mouse_X(), game->Mouse_Y());
+
+	D3DXIMAGE_INFO ballInfo = ball->GetInfo();
+	ball->Update(dt,SCREEN_WIDTH-ballInfo.Width,SCREEN_HEIGHT-ballInfo.Height);
+
+	if (game->Check(paddleLeft->rect, ball->rect)) {
+		ball->dx = -ball->dx;
+	}
+	if (game->Check(paddleRight->rect, ball->rect)) {
+		ball->dy = -ball->dy;
+	}
+	
+
+
+
+	
+	
+
 	
 }
 
@@ -108,9 +152,9 @@ void Render()
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
 
-		square->Render();
-		
-
+		paddleLeft->Render();
+		paddleRight->Render();
+		ball->Render();
 
 		spriteHandler->End();
 		d3ddv->EndScene();
@@ -122,6 +166,7 @@ void Render()
 
 HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int ScreenHeight)
 {
+	ShowCursor(FALSE);
 	WNDCLASSEX wc;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
@@ -195,6 +240,7 @@ int Run()
 		{
 			frameStart = now;
 			game->ProcessKeyboard();
+			
 			Update(dt);
 			Render();
 		}
@@ -213,7 +259,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	game->Init(hWnd);
 
 	keyHandler = new CSampleKeyHander();
-	game->InitKeyboard(keyHandler);
+		game->InitKeyboard(keyHandler);
+	
 	LoadResources();
 	Run();
 

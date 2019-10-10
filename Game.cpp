@@ -51,6 +51,7 @@ void CGame::Init(HWND hWnd)
 
 	OutputDebugString(L"[INFO] InitCGame done;\n");
 }
+
 void CGame::InitKeyboard(LPKEYEVENTHANDLER handler)
 {
 	HRESULT
@@ -67,7 +68,10 @@ void CGame::InitKeyboard(LPKEYEVENTHANDLER handler)
 		return;
 	}
 
+	//initialize the keyboard
 	hr = di->CreateDevice(GUID_SysKeyboard, &didv, NULL);
+	//initialize the mouse
+	hr = di->CreateDevice(GUID_SysMouse, &didvMouse, NULL);
 
 	// TO-DO: put in exception handling
 	if (hr != DI_OK)
@@ -88,6 +92,9 @@ void CGame::InitKeyboard(LPKEYEVENTHANDLER handler)
 
 	hr = didv->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
+	hr = didvMouse->SetDataFormat(&c_dfDIMouse);
+
+	hr = didvMouse->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
 	// IMPORTANT STEP TO USE BUFFERED DEVICE DATA!
 	//
@@ -109,6 +116,7 @@ void CGame::InitKeyboard(LPKEYEVENTHANDLER handler)
 	hr = didv->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph);
 
 	hr = didv->Acquire();
+	hr = didvMouse->Acquire();
 	if (hr != DI_OK)
 	{
 		DebugOut(L"[ERROR] DINPUT8::Acquire failed!\n");
@@ -151,12 +159,14 @@ void CGame::ProcessKeyboard()
 
 	// Collect all key states first
 	hr = didv->GetDeviceState(sizeof(keyStates), keyStates);
+	hr = didvMouse->GetDeviceState(sizeof(mouse_state), (LPVOID)& mouse_state);
 	if (FAILED(hr))
 	{
 		// If the keyboard lost focus or was not acquired then try to get control back.
 		if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 		{
 			HRESULT h = didv->Acquire();
+			h = didvMouse->Acquire();
 			if (h == DI_OK)
 			{
 				DebugOut(L"[INFO] Keyboard re-acquired!\n");
@@ -171,7 +181,7 @@ void CGame::ProcessKeyboard()
 	}
 
 	keyHandler->KeyState((BYTE*)& keyStates);
-
+	
 
 
 	// Collect all buffered events

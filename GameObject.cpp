@@ -67,17 +67,40 @@ CGameObject::~CGameObject()
 	if (texture != NULL) texture->Release();
 }
 
-void Square::Update(DWORD dt)
+void Paddle::Update(DWORD dt)
 {
 	switch (state)
 	{
 	case MOVE_UP_KEYBOARD:
-		y += 0.2f * dt; break;
-	case MOVE_DOWN_KEYBOARD:
 		y -= 0.2f * dt; break;
+	case MOVE_DOWN_KEYBOARD:
+		y += 0.2f * dt; break;
 	case IDLE:
 		break;
 	default:
 		break;
 	}
+	rect.left = x;
+	rect.top = y;
+	rect.right = x + infoSquare.Width;
+	rect.bottom = y + infoSquare.Height;
+
 }
+
+void Paddle::UpdateR(DWORD dt,int xs, int ys)
+{
+	
+	if (y < 0) { y = 0; };
+	if (y > SCREEN_HEIGHT - infoSquare.Height) y = SCREEN_HEIGHT - infoSquare.Height;
+	y = y + ys; 
+	rect.left = x;
+	rect.top = y;
+	rect.right =  infoSquare.Width;
+	rect.bottom = infoSquare.Height;
+
+
+	
+
+	
+}
+
