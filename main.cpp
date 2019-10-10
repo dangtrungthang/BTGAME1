@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Ball.h"
+#include "Paddle.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"BAI-TAP-GAME-1"
@@ -25,9 +26,9 @@
 #define MAX_FRAME_RATE 120
 
 CGame *game;
-Paddle *paddleLeft;
-Paddle* paddleRight;
 Ball* ball;
+Paddle* paddleLeft;
+Paddle* paddleRight;
 
 class CSampleKeyHander :public KeyEventHandler {
 	virtual void KeyState(BYTE* states);
@@ -94,7 +95,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void LoadResources()
 {
 	paddleLeft = new Paddle(TEXTURE_PATH);
-	paddleLeft->SetPosition(100.0f, 0.0f);
+	paddleLeft->SetPosition(100.0f, 350.0f);
+	
 
 	paddleRight = new Paddle(TEXTURE_PATH);
 	D3DXIMAGE_INFO infoPaddleR = paddleRight->GetInfo();
@@ -111,20 +113,33 @@ void LoadResources()
 	Update world status for this frame
 	dt: time period between beginning of last frame and beginning of this frame
 */
+bool CheckCollision(Paddle paddle, Ball ball) {
+	float ballW = 40.0f;
+	float ballH = 40.0f;
+	
+	return false;
+}
 void Update(DWORD dt)
 {
+	if (paddleLeft->x < ball->x + 40.0f &&
+		paddleLeft->x + 16.0f>ball->x &&
+		paddleLeft->y<ball->y + 40.0f &&
+		paddleLeft->y + 281.0f>ball->y) {
+		ball->dx = -ball->dx;
+	}
+	if (paddleRight->x < ball->x + 40.0f &&
+		paddleRight->x + 16.0f>ball->x &&
+		paddleRight->y<ball->y + 40.0f &&
+		paddleRight->y + 281.0f>ball->y) {
+		ball->dx = -ball->dx;
+	}
+	
 	paddleLeft->Update(dt);
 	paddleRight->UpdateR(dt, game->Mouse_X(), game->Mouse_Y());
-
 	D3DXIMAGE_INFO ballInfo = ball->GetInfo();
 	ball->Update(dt,SCREEN_WIDTH-ballInfo.Width,SCREEN_HEIGHT-ballInfo.Height);
 
-	if (game->Check(paddleLeft->rect, ball->rect)) {
-		ball->dx = -ball->dx;
-	}
-	if (game->Check(paddleRight->rect, ball->rect)) {
-		ball->dy = -ball->dy;
-	}
+	
 	
 
 
@@ -151,7 +166,7 @@ void Render()
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
-
+		
 		paddleLeft->Render();
 		paddleRight->Render();
 		ball->Render();

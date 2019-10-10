@@ -10,8 +10,7 @@
 class CGameObject
 {
 protected: 
-	float x; 
-	float y;
+	
 	float t;
 
 	
@@ -19,24 +18,19 @@ protected:
 	LPDIRECT3DTEXTURE9 texture;		
 	D3DXIMAGE_INFO infoSquare;
 public: 
+	float x;
+	float y;
 	RECT rect;
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetState(int state) { this->state = state; }
 
 	void GetPosition(float& x, float& y) { x = this->x; y = this->y; }
+
 	int GetState() { return this->state; }
 	D3DXIMAGE_INFO GetInfo() { return this->infoSquare; }
 	CGameObject(LPCWSTR texturePath);
 	void Update(DWORD dt);
 	void Render();
 	~CGameObject();
-};
-
-class Paddle : public CGameObject
-{
-public: 
-	Paddle(LPCWSTR texturePath) :CGameObject(texturePath) {};
-	void Update(DWORD dt);
-	void UpdateR(DWORD dt,int x,int y);
 };
 

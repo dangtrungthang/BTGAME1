@@ -49,16 +49,7 @@ public:
 	int Mouse_Button(int button){ return BUTTON_DOWN(mouse_state, button); }
 	void ProcessKeyboard();
 	
-	bool Check(RECT r1, RECT r2)
-	{
-		if(r2.left < r1.left + r1.right &&
-			r2.left > r1.left &&
-			r2.top < r1.top + r1.bottom &&
-			r2.top > r1.top){
-			return true;
-			}
-		return false;
-	}
+	
 
 
 
@@ -72,7 +63,7 @@ public:
 
 
 
-
+	
 	static void SweptAABB(
 		float ml,			// move left 
 		float mt,			// move top
