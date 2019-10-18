@@ -1,0 +1,11 @@
+﻿Game.obj : error LNK2019: unresolved external symbol Direct3DCreate9 referenced in function "public: void __cdecl CGame::Init(struct HWND__ *)" (?Init@CGame@@QEAAXPEAUHWND__@@@Z)
+Game.obj : error LNK2019: unresolved external symbol D3DXCreateSprite referenced in function "public: void __cdecl CGame::Init(struct HWND__ *)" (?Init@CGame@@QEAAXPEAUHWND__@@@Z)
+Game.obj : error LNK2019: unresolved external symbol DirectInput8Create referenced in function "public: void __cdecl CGame::InitKeyboard(class KeyEventHandler *)" (?InitKeyboard@CGame@@QEAAXPEAVKeyEventHandler@@@Z)
+Game.obj : error LNK2001: unresolved external symbol IID_IDirectInput8W
+Game.obj : error LNK2001: unresolved external symbol GUID_SysMouse
+Game.obj : error LNK2001: unresolved external symbol GUID_SysKeyboard
+Game.obj : error LNK2001: unresolved external symbol c_dfDIMouse
+Game.obj : error LNK2001: unresolved external symbol c_dfDIKeyboard
+GameObject.obj : error LNK2019: unresolved external symbol D3DXGetImageInfoFromFileW referenced in function "public: __cdecl CGameObject::CGameObject(wchar_t const *)" (??0CGameObject@@QEAA@PEB_W@Z)
+GameObject.obj : error LNK2019: unresolved external symbol D3DXCreateTextureFromFileExW referenced in function "public: __cdecl CGameObject::CGameObject(wchar_t const *)" (??0CGameObject@@QEAA@PEB_W@Z)
+C:\Users\buiqu\OneDrive\Documents\GitHub\BTGAME1\x64\Debug\BTGAME1.exe : fatal error LNK1120: 10 unresolved externals
